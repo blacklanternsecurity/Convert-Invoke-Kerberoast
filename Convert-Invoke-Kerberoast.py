@@ -6,7 +6,7 @@ import io
 import re
 
 def format_Data(fHandle):
-    fh = io.open(fHandle, 'r', encoding="utf-16-le")
+    fh = io.open(fHandle, 'r')
     SamAccountName = ''
     DistinguishedName = ''
     Hash = ''
