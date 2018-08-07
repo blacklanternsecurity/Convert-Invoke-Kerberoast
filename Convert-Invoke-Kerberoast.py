@@ -6,11 +6,6 @@ import io
 import re
 import sys
 
-# TODO Input parameter fuer einzelne Accounts
-# Zeigen wo man gerade ist
-# Richtiges exception handling (Passes raus)
-# UTF-8
-
 def format_Data(fHandle, inputSamAccountName):
     fh = io.open(fHandle, 'r')
     SamAccountName = ''
