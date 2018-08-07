@@ -36,7 +36,7 @@ def format_Data(fHandle):
             if "                       " in line:
                 Hash += line.strip()
             if line == '\n':
-                print('Adding {!r} to output file').format(SamAccountName)
+                print('[*] Adding {!r} to output file').format(SamAccountName)
                 Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
                 SamAccountName = ''
                 DistinguishedName = ''
@@ -49,7 +49,7 @@ def format_Data(fHandle):
     if SamAccountName != '' and DistinguishedName != '' and  Hash != '': # Check if there ist still a hash element not appended 
         Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
     
-    print("\n[+] Created {0} entries.").format(len(Hashes))
+    print("[+] Created {0} entries.").format(len(Hashes))
     return Hashes
 
 
@@ -62,7 +62,7 @@ parsed = parser.parse_args()
 
 if(os.path.isfile(parsed.inputHandle)):
 
-    print("Opening file: {0}").format(parsed.inputHandle)
+    print("[*] Opening file: {0}").format(parsed.inputHandle)
     output = format_Data(parsed.inputHandle)
     if parsed.outputHandle:
         fOutput = open(parsed.outputHandle, 'w')
