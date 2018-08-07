@@ -4,6 +4,12 @@ import argparse
 import os
 import io
 import re
+import sys
+
+# TODO Input parameter fuer einzelne Accounts
+# Zeigen wo man gerade ist
+# Richtiges exception handling (Passes raus)
+# UTF-8
 
 def format_Data(fHandle):
     fh = io.open(fHandle, 'r')
@@ -30,13 +36,20 @@ def format_Data(fHandle):
             if "                       " in line:
                 Hash += line.strip()
             if line == '\n':
+                print('Adding {!r} to output file').format(SamAccountName)
                 Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
                 SamAccountName = ''
                 DistinguishedName = ''
                 Hash = ''
-                pass
-    except:
-        pass
+    except Exception, e:
+        print >> sys.stderr, '[-] Error: %s \n Exiting...' % e
+
+        sys.exit(1)
+    
+    if SamAccountName != '' and DistinguishedName != '' and  Hash != '': # Check if there ist still a hash element not appended 
+        Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
+    
+    print("\n[+] Created {0} entries.").format(len(Hashes))
     return Hashes
 
 
@@ -48,6 +61,7 @@ parser.add_argument('-w', action="store", dest="outputHandle")
 parsed = parser.parse_args()
 
 if(os.path.isfile(parsed.inputHandle)):
+
     print("Opening file: {0}").format(parsed.inputHandle)
     output = format_Data(parsed.inputHandle)
     if parsed.outputHandle:
@@ -56,7 +70,7 @@ if(os.path.isfile(parsed.inputHandle)):
             fOutput.write(element)
             fOutput.write('\n')
         fOutput.close()
-        print("Hashes written to: {0}".format(parsed.outputHandle))
+        print("[+] Hashes written to: {0}".format(parsed.outputHandle))
     else:
         for element in output:
             print(element)
