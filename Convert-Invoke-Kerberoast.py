@@ -11,7 +11,7 @@ import sys
 # Richtiges exception handling (Passes raus)
 # UTF-8
 
-def format_Data(fHandle):
+def format_Data(fHandle, inputSamAccountName):
     fh = io.open(fHandle, 'r')
     SamAccountName = ''
     DistinguishedName = ''
@@ -35,7 +35,7 @@ def format_Data(fHandle):
             #Grab Hash Line
             if "                       " in line:
                 Hash += line.strip()
-            if line == '\n':
+            if line == '\n' and (inputSamAccountName == None or SamAccountName in inputSamAccountName):
                 print('[*] Adding {!r} to output file').format(SamAccountName)
                 Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
                 SamAccountName = ''
@@ -47,7 +47,9 @@ def format_Data(fHandle):
         sys.exit(1)
     
     if SamAccountName != '' and DistinguishedName != '' and  Hash != '': # Check if there ist still a hash element not appended 
-        Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
+        if inputSamAccountName == None or SamAccountName in inputSamAccountName:
+            print('[*] Adding {!r} to output file').format(SamAccountName)
+            Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
     
     print("[+] Created {0} entries.").format(len(Hashes))
     return Hashes
@@ -55,15 +57,16 @@ def format_Data(fHandle):
 
 parser = argparse.ArgumentParser(description='Parser of Kerberoast output from Invoke-Kerberoast')
 
-parser.add_argument('-f', action="store", dest="inputHandle", required=True)
-parser.add_argument('-w', action="store", dest="outputHandle")
+parser.add_argument('-f', action="store", dest="inputHandle", required=True, help = "Input file")
+parser.add_argument('-w', action="store", dest="outputHandle", help = "Output file")
+parser.add_argument('-a', action="store", dest="inputSamAccountName", nargs='*', help="Specify one or more SamAccountName(s) which will be extracted from a list of multiple hashes.")
 
 parsed = parser.parse_args()
 
 if(os.path.isfile(parsed.inputHandle)):
 
     print("[*] Opening file: {0}").format(parsed.inputHandle)
-    output = format_Data(parsed.inputHandle)
+    output = format_Data(parsed.inputHandle, parsed.inputSamAccountName)
     if parsed.outputHandle:
         fOutput = open(parsed.outputHandle, 'w')
         for element in output:
