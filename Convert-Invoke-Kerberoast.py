@@ -30,7 +30,7 @@ def format_Data(fHandle):
             if "                       " in line:
                 Hash += line.strip()
             if line == '\n':
-                Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*$".format(SamAccountName,DistinguishedName), Hash))
+                Hashes.append(re.sub(r'\*.*\*',"*{0}${1}$spn*".format(SamAccountName,DistinguishedName), Hash))
                 SamAccountName = ''
                 DistinguishedName = ''
                 Hash = ''
