@@ -8,6 +8,8 @@ When using [Invoke-Kerberoast](https://github.com/EmpireProject/Empire/blob/mast
 Example:
 ```
 python Convert-Invoke-Kerberoast.py -f tickets.txt -w hashes.txt
+python Convert-Invoke-Kerberoast.py -f tickets.txt -w hashes.txt -a dbadmin
+python Convert-Invoke-Kerberoast.py -f tickets.txt -w hashes.txt -a dbadmin dbuser3
 ```
 
 
